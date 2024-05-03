@@ -1,39 +1,38 @@
-from sqlalchemy import(
-    create_engine,Column,Integer,String
-    )
-
+from sqlalchemy import (
+    create_engine, Column, Integer, String
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-#executing the instructions from the "chinook" database
-db=create_engine("postgresql:///chinook")
-base=declarative_base()
 
-#Create a class based model for "Programmr" table
+# executing the instructions from the "chinook" database
+db = create_engine("postgresql:///chinook")
+base = declarative_base()
 
+
+# create a class-based model for the "Programmer" table
 class Programmer(base):
-    __tablename__="Programmer"
-    id=Column(Integer,primary_key=True)
-    first_name=Column(String)
-    last_name=Column(String)
-    gender=Column(String)
-    nationality=Column(String)
-    famous_for=Column(String)
+    __tablename__ = "Programmer"
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String)
+    last_name = Column(String)
+    gender = Column(String)
+    nationality = Column(String)
+    famous_for = Column(String)
 
-# Instead of connecting to the database directly, we will ask for a session 
-#create a nwe instance of sessionmaker,then point to our engine(the db)
 
-Session=sessionmaker(db)
+# instead of connecting to the database directly, we will ask for a session
+# create a new instance of sessionmaker, then point to our engine (the db)
+Session = sessionmaker(db)
+# opens an actual session by calling the Session() subclass defined above
+session = Session()
 
-#opens an actual session by callimg the Sesion) subclass defined above
-session=Session()
-
-#Creating the database using declarative base subclass
+# creating the database using declarative_base subclass
 base.metadata.create_all(db)
 
-#creating records on our programmer table
 
-ada_lovelace=Programmer(
+# creating records on our Progammer table
+ada_lovelace = Programmer(
     first_name="Ada",
     last_name="Lovelace",
     gender="F",
@@ -41,7 +40,7 @@ ada_lovelace=Programmer(
     famous_for="First Programmer"
 )
 
-alan_turing=Programmer(
+alan_turing = Programmer(
     first_name="Alan",
     last_name="Turing",
     gender="M",
@@ -81,14 +80,13 @@ tim_berners_lee = Programmer(
     famous_for="World Wide Web"
 )
 
-saranya_jayakumaran=Programmer(
-    first_name="saranya",
-    last_name="jayakumaran",
-    gender="F",
-    nationality="Indian",
-    famous_for="Full stack developer"
+your_name = Programmer(
+    first_name="Your First Name",
+    last_name="Your Last Name",
+    gender="Your Gender",
+    nationality="Your Nationality",
+    famous_for="Celebrate Yourself Here"
 )
-
 
 #add each instance of our programmers to our session
 #session.add(ada_lovelace)
@@ -97,10 +95,51 @@ saranya_jayakumaran=Programmer(
 #session.add(margaret_hamilton)
 #session.add(bill_gates)
 #session.add(tim_berners_lee)
-session.add(saranya_jayakumaran)
+#session.add(saranya_jayakumaran)
+
+
+
+
+#updating a single record
+
+#programmer=session.query(Programmer).filter_by(id=17).first()
+#programmer.famous_for="World President"
+
+# updating multiple records
+#people = session.query(Programmer)
+#for person in people:
+    #if person.gender == "F":
+        #person.gender = "Female"
+    #elif person.gender == "M":
+        #person.gender = "Male"
+#else:
+    #print("Gender not defined")
+#session.commit()
+
+
+people=session.query(Programmer)
 
 # Commit our session to the database
-session.commit()
+#session.commit()
+
+#deleting a single record
+
+fname=input("Entr a first name:")
+lname=input("Enter the last name:")
+programmer=session.query(Programmer).filter_by(first_name=fname,last_name=lname).first()
+
+#defensive programming
+if programmer is not NONE:
+    print("Programmer Found: ", programmer.first_name + "" + programmer.last_name)
+    confirmation=input("Are you sure you want to delete this record?(y/n)")
+    if confirmation.lower=="y":
+        session.delete(programmer)
+        session.commit()
+        print("Programmer has been deleted")
+    else:
+        print("programmer not deleted")
+else:
+    print("No records found")
 
 #Query the database to find all programmers
 
